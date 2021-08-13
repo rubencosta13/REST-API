@@ -17,7 +17,7 @@ app.use(bodyparser.urlencoded({extended: false}))
 app.use(bodyparser.json())
 app.use('/products', productRoutes)
 app.use('/orders',ordersRoutes)
-app.use('/signup', userRoutes)
+app.use('/users', userRoutes)
 
 app.use((req,res,next) => {
     res.header('Access-Control-Allow-Origin', '*')
