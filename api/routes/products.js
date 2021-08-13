@@ -2,10 +2,33 @@ const express = require('express')
 const router = express.Router()
 const Product = require('../models/products')
 const mongoose = require('mongoose')
+const multer = require('multer')
+const storage = multer.diskStorage({
+    destination: function (req, file, cb){
+        cb(null, './uploads/')
+    },
+    filename: function(req, file, cb){
+        cb(null, Date.now()+file.originalname)
+    }
+})
+const fileFilter = (req, file, cb) => {
+    if(file.mimetype === 'image/jpeg' || file.mimetype === 'image/png'){
+        cb(null, true)
+    }else{
+    cb(null, false)
+    }   
+}
+const upload = multer({
+    storage: storage,
+    limits: {
+        filesize: 1024 * 1024 * 500
+    },
+    fileFilter: fileFilter,
+})
 
 router.get('/', (req, res) =>{
     Product.find()
-    .select('name price _id')
+    .select('name price _id productImage')
     .exec()
     .then(docs => {
         const response = {
@@ -15,6 +38,7 @@ router.get('/', (req, res) =>{
                     name: doc.name,
                     price: doc.price,
                     _id: doc._id,
+                    productImage: doc.productImage,
                     request: {
                         type: 'GET',
                         url: 'http://localhost:3001/products/' +doc._id 
@@ -25,15 +49,16 @@ router.get('/', (req, res) =>{
         res.status(200).json(response)
     })
     .catch((err) =>{
-        console.log(err)
         res.status(500).json({error: err})
     })
 })
-router.post('/', (req, res) =>{
+router.post('/',upload.single('productImage'), (req, res) =>{
+    console.log(req.file)
     const product = new Product({
         _id: new mongoose.Types.ObjectId(),
         name: req.body.name,
         price: req.body.price,
+        productImage: req.file.path
     });
 
     product.save().then(result =>{
@@ -60,7 +85,7 @@ router.post('/', (req, res) =>{
 router.get('/:id', (req, res) =>{
     const Id = req.params.id
     Product.findById(Id)
-    .select('name price _id')
+    .select('name price _id productImage')
     .exec()
     .then(doc => {
         if (doc){
@@ -133,7 +158,7 @@ router.delete('/:id', (req, res) =>{
     })
     .catch((err) =>{
         console.log(err)
-        res.send(500).json({
+        res.status(500).json({
             error: err
         })
     })

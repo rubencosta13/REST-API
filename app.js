@@ -3,6 +3,7 @@ const app = express()
 const morgan = require('morgan')
 const productRoutes = require('./api/routes/products')
 const ordersRoutes = require('./api/routes/orders')
+const userRoutes = require('./api/routes/user')
 const bodyparser = require('body-parser')
 const mongoose = require('mongoose')
 require('dotenv')
@@ -11,11 +12,12 @@ mongoose.connect("mongodb+srv://ADMIN:CMqNeatRpPzfj0hg@main-db.butdh.mongodb.net
 
 
 app.use(morgan('dev')) //loging information
+app.use('/uploads',express.static('uploads'))
 app.use(bodyparser.urlencoded({extended: false}))
 app.use(bodyparser.json())
 app.use('/products', productRoutes)
 app.use('/orders',ordersRoutes)
-
+app.use('/signup', userRoutes)
 
 app.use((req,res,next) => {
     res.header('Access-Control-Allow-Origin', '*')
