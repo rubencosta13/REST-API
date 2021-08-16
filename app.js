@@ -6,8 +6,8 @@ const ordersRoutes = require('./api/routes/orders')
 const userRoutes = require('./api/routes/user')
 const bodyparser = require('body-parser')
 const mongoose = require('mongoose')
-require('dotenv')
-mongoose.connect("mongodb+srv://ADMIN:CMqNeatRpPzfj0hg@main-db.butdh.mongodb.net/myFirstDatabase?retryWrites=true&w=majority", { useNewUrlParser: true, useUnifiedTopology: true } )
+require('dotenv').config()
+mongoose.connect("mongodb+srv://ADMIN:"+process.env.DB_PASSWORD+"@main-db.butdh.mongodb.net/myFirstDatabase?retryWrites=true&w=majority", { useNewUrlParser: true, useUnifiedTopology: true } )
 
 
 

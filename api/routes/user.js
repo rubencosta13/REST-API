@@ -3,8 +3,29 @@ const router = express.Router();
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-
 const User = require("../models/user");
+require('dotenv').config()
+
+router.get('/all', (req, res, next) => {
+  User.find()
+  .exec()
+  .then(docs =>{
+    const response = {
+      count: docs.length,
+      users: docs.map(user=>{
+        return{
+          id: user._id,
+          name: user.name,
+          email: user.email,
+        }
+      })
+    }
+    res.status(200).json(response)
+  })
+  .catch(err => {
+    res.status(500).json({ error: err })
+  })
+})
 
 router.post("/signup", (req, res, next) => {
   User.find({ email: req.body.email })
@@ -22,10 +43,13 @@ router.post("/signup", (req, res, next) => {
             });
           } else {
             const user = new User({
-              _id: new mongoose.Types.ObjectId(),
+              _id:  new mongoose.Types.ObjectId(),
               name: req.body.name,
               email: req.body.email,
-              password: hash
+              password: hash,
+              group: req.body.group,
+              bio: req.body.bio,
+              profilePicture: req.body.profilePicture,
             });
             user
               .save()
@@ -68,7 +92,7 @@ router.post("/login", (req, res, next) => {
               email: user[0].email,
               userId: user[0]._id
             },
-            "process.env.JWT_KEY",
+            process.env.JWT_KEY,
           );
           return res.status(200).json({
             message: "Auth successful",
@@ -95,6 +119,7 @@ router.delete("/:userId", (req, res, next) => {
       res.status(200).json({
         message: "User deleted"
       });
+      console.log(result);
     })
     .catch(err => {
       console.log(err);
@@ -103,5 +128,33 @@ router.delete("/:userId", (req, res, next) => {
       });
     });
 });
+
+router.get('/:id', (req, res, next) => {
+  const ID = req.params.id
+  User.findById(ID)
+  .exec()
+  .then(user => {
+    if(user){
+      const response = {
+          Info: user._id + "\`s info: ",
+          return: { 
+            id: user._id,
+            name: user.name,
+            email: user.email,
+            bio: user.bio,
+            profilePicture: user.profilePicture
+          }
+          
+      }
+      res.status(200).json(response)
+    }
+  })
+  .catch(err =>{
+    res.status(500).json({
+      error: err
+    })
+  })
+})
+
 
 module.exports = router;

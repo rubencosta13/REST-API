@@ -72,7 +72,7 @@ router.post('/',checkAuth, upload.single('productImage'), (req, res) =>{
                 _id: result._id,
                 request: {
                     type: 'GET',
-                    url: 'http://localhost:3001/' +result._id
+                    url: 'http://localhost:3001/products/' +result._id
                 }
             }
         }) 
@@ -97,7 +97,7 @@ router.get('/:id', (req, res) =>{
                     _id: doc._id,
                     request: {
                         type: 'GET',
-                        url: 'http://localhost:3001/' +doc._id,
+                        url: 'http://localhost:3001/products/' +doc._id,
                         description: 'GETS INFORMATION ABOUT A SPECIFIC PRODUCT'
                     }
                 }
@@ -118,7 +118,7 @@ router.patch('/:id', (req, res) =>{
         updateOps[ops.propName] = ops.value
     }
     Product.findOneAndUpdate({_id:Id},{
-        $set: updateOps
+        $set: req.body
     }).exec()
     .then(result => {
         console.log(result)
@@ -129,7 +129,7 @@ router.patch('/:id', (req, res) =>{
                 _id: doc._id,
                 request: {
                     type: 'GET',
-                    url: 'http://localhost:3001/' +doc._id
+                    url: 'http://localhost:3001/products/' +doc._id
                 }
             }
         })
