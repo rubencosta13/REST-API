@@ -6,7 +6,7 @@ const jwt = require("jsonwebtoken");
 const User = require("../models/user");
 require('dotenv').config()
 
-router.get('/all', (req, res, next) => {
+router.get('/all',checkAuth, (req, res, next) => {
   User.find()
   .exec()
   .then(docs =>{
