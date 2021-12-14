@@ -1,7 +1,7 @@
 {
-  "name": "rest_api_benuino_automation",
+  "name": "rest_api",
   "version": "1.0.0",
-  "description": "",
+  "description": "A simple REST API",
   "main": "server.js",
   "dependencies": {
     "bcrypt": "^5.0.1",
@@ -23,12 +23,5 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "nodemon server.js"
   },
-  "keywords": [
-    "node",
-    "api",
-    "home automation",
-    "BENUINO"
-  ],
-  "author": "Ruben Costa (BENUINO CEO)",
   "license": "ISC"
 }
